@@ -5,6 +5,7 @@ package ua.ibt.clinic.api;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.Date;
 
 /**
  * @author Iryna Tkachova
@@ -15,26 +16,35 @@ public class ClinicUser {
 	@XmlElement
 	public Long user_id;
 
-	@XmlElement(required = true)
+	@XmlElement
 	public String login;
 
-	@XmlElement(required = true)
+	@XmlElement
 	public String passwdhash;
 
-	@XmlElement(required = true)
+	@XmlElement
 	public String email;
 
 	@XmlElement
-	private String createdby;
+	public String createdby;
 
 	@XmlElement
-	private String lastlogin;
+	public String lastlogin;
 
-	@XmlElement(required = true)
-	public String firstName;
+	@XmlElement
+	public String name;
 
-	@XmlElement(required = true)
-	public String lastName;
+	@XmlElement
+	public String surname;
+
+	@XmlElement
+	public String middlename;
+
+	@XmlElement
+	public Date birthday;
+
+	@XmlElement
+	public String sex;
 
 	@XmlElement
 	public String numcard;

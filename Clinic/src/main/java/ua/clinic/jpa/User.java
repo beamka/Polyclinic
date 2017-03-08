@@ -69,7 +69,7 @@ public class User implements Serializable {
 	@Temporal(TemporalType.DATE)
 	private Date lastlogin;
 
-	//@ManyToMany(mappedBy = "user")
+	//@ManyToMany(mappedBy = "id_user")
 	@ManyToMany
 	private List<Ugroup> ugroups;
 
@@ -87,13 +87,14 @@ public class User implements Serializable {
 		this.iduser = iduser;
 	}
 
-	public User(Long iduser, String login, String passwdhash, String email, String createdBy) {
+	public User(Long iduser, String login, String passwdhash, String email, String createdBy, Userdetails userdetails) {
 		super();
 		this.iduser = iduser;
 		this.login = login;
 		this.passwdhash = passwdhash;
 		this.email = email;
 		this.createdby = createdBy;
+		this.userdetails = userdetails;
 	}
 
 	public Long getIduser() {

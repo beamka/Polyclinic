@@ -14,8 +14,11 @@ import org.springframework.stereotype.Service;
 import ua.clinic.jpa.Ugroup;
 import ua.clinic.jpa.User;
 import ua.clinic.jpa.Userdetails;
+import ua.clinic.repository.UgroupRepository;
 import ua.clinic.repository.UserRepository;
 import ua.clinic.repository.UserdetailsRepository;
+import ua.clinic.utils.EntityIdGenerator;
+import ua.clinic.utils.IdGenerator;
 
 /**
  * @author Iryna Tkachova
@@ -28,6 +31,30 @@ public class UserService {
     UserRepository userRepository;
     @Autowired
     UserdetailsRepository detailsRepository;
+    @Autowired
+    UgroupRepository ugroupRepository;
+
+    public User newUser(User inData) {
+        Long newId;
+        do {
+            newId = EntityIdGenerator.random();
+        } while(userRepository.findOne(newId) != null);
+        inData.setIduser(newId);
+        Ugroup ugroup = ugroupRepository.findByGroupname("guest");
+        List<Ugroup> ugroups = new ArrayList<>();
+        ugroups.add(ugroup);
+        inData.setUgroups(ugroups);
+        inData.getUserdetails().setIddetails(newId);
+        User outData = userRepository.save(inData);
+        logger.debug("##### New user's Login: "+outData.getLogin()+"  ID: "+outData.getIduser());
+
+        List<User> users = ugroup.getUsers();
+        users.add(outData);
+        ugroup.setUsers(users);
+        ugroupRepository.save(ugroup);
+
+        return outData;
+    }
 
     public List<User> getAllUsers() {
 
@@ -59,7 +86,7 @@ public class UserService {
         User u = userRepository.findOne(id);
         if(u!=null){
             logger.debug("Deleting users %s with id %s", u.getLogin(), u.getIduser());
-            List<Ugroup> gl = u.getUgroups();
+           // List<Ugroup> gl = u.getUgroups();
             detailsRepository.delete(id);
             userRepository.delete(id);
         }

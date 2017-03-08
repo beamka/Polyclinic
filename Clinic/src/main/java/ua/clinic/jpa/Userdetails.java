@@ -63,8 +63,7 @@ public class Userdetails implements Serializable {
     @Column(name = "sex")
     private String sex;
 
-    @Basic(optional = false)
-    @NotNull
+    //@Basic(optional = false)
     @Size(min = 1, max = 200)
     @Column(name = "notes")
     private String notes;
@@ -87,6 +86,7 @@ public class Userdetails implements Serializable {
     }
 
     public Userdetails(Long iddetails) {
+
         this.iddetails = iddetails;
     }
 

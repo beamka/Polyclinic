@@ -15,6 +15,9 @@ import ua.clinic.repository.UserRepository;
 import ua.clinic.repository.UserdetailsRepository;
 import ua.clinic.utils.EntityIdGenerator;
 import ua.ibt.clinic.api.ClinicUser;
+import ua.ibt.clinic.api.NewUserGet;
+
+import java.util.Date;
 
 /**
  * @author Iryna Tkachova
@@ -31,7 +34,17 @@ public class UserMapper {
 	@Autowired
 	UgroupRepository groupRepository;
 
-	public ClinicUser fromInternal(User u) {
+	public User toInside(ClinicUser inData) {
+		User newUser = null;
+		if(inData != null){
+			Userdetails newDetails = new Userdetails(null, inData.numcard, inData.name, inData.surname, inData.middlename, inData.birthday, inData.sex, null);
+			newUser = new User(null, inData.login, inData.passwdhash, inData.email, inData.createdby, newDetails);
+			logger.debug("##### newUser: "+newUser);
+		}
+		return newUser;
+	}
+
+	public ClinicUser toOutside(User u) {
 		ClinicUser lu = null;
 		if (u != null) {
 			lu = new ClinicUser();
@@ -40,17 +53,17 @@ public class UserMapper {
 			lu.login = u.getLogin();
 			lu.user_id = u.getIduser();
 			if (ud != null) {
-				lu.firstName = u.getUserdetails().getName();
-				lu.lastName = u.getUserdetails().getSurname();
+				//lu.firstName = u.getUserdetails().getName();
+				//lu.lastName = u.getUserdetails().getSurname();
 			}
 		}
 		return lu;
 	}
 
-	public User toInternal(ClinicUser lu) {
-		User au = null;
-		return au;
-	}
+//	public User toInternal(ClinicUser lu) {
+//		User au = null;
+//		return au;
+//	}
 
 	private User newUser() {
 		//TODO: get logged user from security context
