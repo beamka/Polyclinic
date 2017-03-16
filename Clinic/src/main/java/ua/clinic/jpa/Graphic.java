@@ -6,16 +6,7 @@ package ua.clinic.jpa;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
+import javax.persistence.*;
 import javax.validation.constraints.Size;
 
 /**
@@ -29,8 +20,6 @@ public class Graphic implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "id_graphic")
     private Long idgraphic;
 
@@ -46,8 +35,12 @@ public class Graphic implements Serializable {
     @Column(name = "cabinet")
     private String cabinet;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "graphic")
-    private List<Doctor> Doctors;
+    //@OneToMany(mappedBy = "graphic", cascade = CascadeType.ALL)
+    @ManyToMany
+    @JoinTable(name = "graphic_doctor", joinColumns =
+    @JoinColumn(name = "id_graphic"),
+            inverseJoinColumns = @JoinColumn(name = "id_doctor"))
+    private List<Doctor> doctors;
 
     public Graphic() {
 
@@ -98,11 +91,11 @@ public class Graphic implements Serializable {
     }
 
     public List<Doctor> getDoctors() {
-        return Doctors;
+        return doctors;
     }
 
     public void setDoctors(List<Doctor> doctors) {
-        Doctors = doctors;
+        this.doctors = doctors;
     }
 
     @Override

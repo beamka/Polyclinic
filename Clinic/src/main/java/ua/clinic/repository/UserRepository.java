@@ -17,6 +17,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
 	@Override
 	List<User> findAll();
+	//List<Userdetails> findByNameAndSurname(String Name, String Surname);
 
 	String findPasswdhashByLogin(String Login);
 }

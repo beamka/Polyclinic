@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import ua.clinic.jpa.Ugroup;
+import ua.clinic.jpa.Group;
 import ua.clinic.jpa.User;
 import ua.clinic.services.UgroupMapper;
 import ua.clinic.services.UgroupService;
@@ -29,12 +29,12 @@ public class UgroupController {
     UserMapper userMapper;
 
     @RequestMapping(path = "/group/new", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ListGroupReceive newGroup(@RequestBody Group inData) {
+    public ListGroupReceive newGroup(@RequestBody GroupAPI inData) {
         logger.debug(">>>>>>>>>> UgroupController start newGroup >>>>>>>>>>");
         ListGroupReceive outData = new ListGroupReceive();
         try {
-            Ugroup user = ugroupService.newGroup(ugroupMapper.toInside(inData));
-            outData.groups.add(ugroupMapper.toOutside(user));
+            Group user = ugroupService.newGroup(ugroupMapper.toInside(inData));
+            outData.groupAPIS.add(ugroupMapper.toOutside(user));
         } catch (Exception e) {
             outData.retcode = -1;
             outData.sys_message = e.getMessage();
@@ -47,8 +47,8 @@ public class UgroupController {
     public ListGroupReceive getAllGroups() {
         logger.debug(">>>>>>>>>> UgroupController start getAllGroups >>>>>>>>>>");
         ListGroupReceive outData = new ListGroupReceive();
-        for (Ugroup ugroup : ugroupService.getAllUgroup()) {
-            outData.groups.add(ugroupMapper.toOutside(ugroup));
+        for (Group group : ugroupService.getAllUgroup()) {
+            outData.groupAPIS.add(ugroupMapper.toOutside(group));
         }
         return outData;
     }
@@ -59,8 +59,8 @@ public class UgroupController {
         ListGroupReceive outData = new ListGroupReceive();
         try {
             ugroupService.createDefoultGroups();
-            for (Ugroup ugroup : ugroupService.getAllUgroup()) {
-                outData.groups.add(ugroupMapper.toOutside(ugroup));
+            for (Group group : ugroupService.getAllUgroup()) {
+                outData.groupAPIS.add(ugroupMapper.toOutside(group));
             }
         } catch (Exception e) {
             outData.retcode = -1;
@@ -70,14 +70,14 @@ public class UgroupController {
         return outData;
     }
 
-    @RequestMapping(path = "/user/del/{id_group}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(path = "/group/del/{id_group}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public SysMessage delGroup(@PathVariable Long id_group) {
         logger.info(">>>>> UgroupController start delGroup >>>>>");
         SysMessage outData = new SysMessage();
         try {
             ugroupService.delUgroup(id_group);
             outData.retcode = 0;
-            outData.sys_message = "Group was deleted successfully.";
+            outData.sys_message = "GroupAPI was deleted successfully.";
         } catch (Exception e) {
             outData.retcode = -1;
             outData.sys_message = e.getMessage();
@@ -91,15 +91,15 @@ public class UgroupController {
         logger.info(">>>>>  UgroupController start delAllGroups >>>>>");
         SysMessage outData = new SysMessage();
         try {
-            for (Ugroup ugroup : ugroupService.getAllUgroup()) {
-                ugroupService.delUgroup(ugroup.getIdgroup());
+            for (Group group : ugroupService.getAllUgroup()) {
+                ugroupService.delUgroup(group.getIdgroup());
             }
             outData.retcode = 0;
-            outData.sys_message = "All groups was deleted successfully.";
+            outData.sys_message = "All groupAPIS was deleted successfully.";
         } catch (Exception e) {
             outData.retcode = -1;
             outData.sys_message = e.getMessage();
-            logger.error("Error delete all groups. Expetion: " + e.getMessage(), e);
+            logger.error("Error delete all groupAPIS. Expetion: " + e.getMessage(), e);
         }
         return outData;
     }
@@ -108,15 +108,15 @@ public class UgroupController {
     public ListGroupReceive getGroupById(@PathVariable Long id_group) {
         logger.info(">>>>>  UgroupController start getGroupById >>>>>");
         ListGroupReceive outData = new ListGroupReceive();
-        outData.groups.add(ugroupMapper.toOutside(ugroupService.getGroupById(id_group)));
+        outData.groupAPIS.add(ugroupMapper.toOutside(ugroupService.getGroupById(id_group)));
         return outData;
     }
 
-    @RequestMapping(path = "/group/usersbyname/{groupname}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ListUsersReceive getUsersByGroupname(@PathVariable String groupname) {
+    @RequestMapping(path = "/group/usersbyname/{group_name}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ListUsersReceive getUsersByGroupname(@PathVariable String group_name) {
         logger.info(">>>>>  UgroupController start getUsersByGroupname >>>>>");
         ListUsersReceive outData = new ListUsersReceive();
-        List<User> users = ugroupService.getUsersByGroupname(groupname);
+        List<User> users = ugroupService.getUserByGroupname(group_name);
         for(User user : users){
             outData.users.add(userMapper.toOutside(user));
         }

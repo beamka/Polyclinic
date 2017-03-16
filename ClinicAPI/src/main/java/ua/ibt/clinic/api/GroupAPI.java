@@ -2,15 +2,18 @@ package ua.ibt.clinic.api;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Iryna Tkachova on 08.03.2017.
  */
 @XmlRootElement
-public class ListGroupReceive extends SysMessage{
+public class GroupAPI {
+    @XmlElement
+    public Long group_id;
 
-    @XmlElement(required = true)
-    public List<GroupAPI> groupAPIS = new ArrayList<>();
+    @XmlElement
+    public String group_name;
+
+    @XmlElement
+    public String description;
 }

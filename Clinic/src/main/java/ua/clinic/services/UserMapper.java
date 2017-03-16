@@ -8,16 +8,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import ua.clinic.jpa.Group;
 import ua.clinic.jpa.User;
-import ua.clinic.jpa.Userdetails;
 import ua.clinic.repository.UgroupRepository;
 import ua.clinic.repository.UserRepository;
 import ua.clinic.repository.UserdetailsRepository;
-import ua.clinic.utils.EntityIdGenerator;
-import ua.ibt.clinic.api.ClinicUser;
-import ua.ibt.clinic.api.NewUserGet;
+import ua.ibt.clinic.api.GroupAPI;
+import ua.ibt.clinic.api.UserAPI;
 
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Iryna Tkachova
@@ -33,56 +33,50 @@ public class UserMapper {
 	UserdetailsRepository detailsRepository;
 	@Autowired
 	UgroupRepository groupRepository;
+	@Autowired
+	UgroupMapper ugroupMapper;
 
-	public User toInside(ClinicUser inData) {
-		User newUser = null;
+	public User toInside(UserAPI inData) {
+		User user = null;
 		if(inData != null){
-			Userdetails newDetails = new Userdetails(null, inData.numcard, inData.name, inData.surname, inData.middlename, inData.birthday, inData.sex, null);
-			newUser = new User(null, inData.login, inData.passwdhash, inData.email, inData.createdby, newDetails);
-			logger.debug("##### newUser: "+newUser);
+			user = new User();
+			//newUser.setIduser(Long.valueOf(1));
+			user.setIduser(inData.id_user);
+			user.setIddetails(inData.id_details);
+			user.setLogin(inData.login);
+			user.setPasswdhash(inData.passwdhash);
+			user.setEmail(inData.email);
+			user.setCreatedby(inData.createdby);
+			user.setLastlogin(inData.lastlogin);
+
+			List<Group> groups = new ArrayList<>();
+			inData.groupAPIS.forEach(group -> {
+				groups.add(ugroupMapper.toInside(group));
+			});
+			user.setGroups(groups);
+			logger.debug("##### toInside: result User = "+ user);
 		}
-		return newUser;
+		return user;
 	}
 
-	public ClinicUser toOutside(User u) {
-		ClinicUser lu = null;
-		if (u != null) {
-			lu = new ClinicUser();
-			Userdetails ud = u.getUserdetails();
-			//lu.isLibrarian = u.getIduser() < 100;
-			lu.login = u.getLogin();
-			lu.user_id = u.getIduser();
-			if (ud != null) {
-				//lu.firstName = u.getUserdetails().getName();
-				//lu.lastName = u.getUserdetails().getSurname();
-			}
-		}
-		return lu;
-	}
+	public UserAPI toOutside(User inData) {
+		UserAPI userAPI = null;
+		if (inData != null) {
+			userAPI = new UserAPI();
+			userAPI.id_user = inData.getIduser();
+			userAPI.id_details = inData.getIddetails();
+			userAPI.login = inData.getLogin();
+			userAPI.passwdhash = inData.getPasswdhash();
+			userAPI.email = inData.getEmail();
+			userAPI.createdby = inData.getCreatedby();
+			userAPI.lastlogin = inData.getLastlogin();
 
-//	public User toInternal(ClinicUser lu) {
-//		User au = null;
-//		return au;
-//	}
-
-	private User newUser() {
-		//TODO: get logged user from security context
-		String createdBy = "REST";
-		User au = new User();
-		Userdetails ud = new Userdetails();
-		boolean idOK = false;
-		Long id = 0L;
-		while (!idOK) {
-			id = EntityIdGenerator.random();
-			idOK = !userRepository.exists(id);
+			List<GroupAPI> groupAPIS = new ArrayList<>();
+			inData.getGroups().forEach(ugroup -> {
+				groupAPIS.add(ugroupMapper.toOutside(ugroup));
+			});
+			userAPI.groupAPIS = groupAPIS;
 		}
-		//notNull
-		ud.setNotes("none");
-		au.setPasswdhash("*");
-		au.setCreatedby(createdBy);
-		au.setIduser(id);
-		ud.setIddetails(id);
-		au.setUserdetails(ud);
-		return au;
+		return userAPI;
 	}
 }

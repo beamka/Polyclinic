@@ -7,7 +7,6 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
 /**
  * @author Iryna Tkachova
@@ -20,22 +19,26 @@ public class Doctor implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "id_doctor")
     private Long iddoctor;
 
-    @JoinColumn(name = "id_doctor", referencedColumnName = "id_user", insertable = false, updatable = false)
     @OneToOne(optional = false)
-    private User user;
+    @JoinColumn(name = "id_details", referencedColumnName = "id_details")
+    private Userdetails userdetails;
 
-    //@ManyToMany(mappedBy = "doctor")
-    @ManyToMany
-    private List<SpecialtyCode> specialtyCodes;
+    @ManyToMany(cascade = CascadeType.REFRESH)
+    @JoinTable(name = "doctor_specialty", joinColumns =
+    @JoinColumn(name = "id_doctor"),
+            inverseJoinColumns = @JoinColumn(name = "id_specialty"))
+    private List<Specialty> specialties;
 
-    @JoinColumn(name = "id_graphic", referencedColumnName = "id_graphic")
-    @ManyToOne(optional = false)
-    private Graphic graphic;
+//    @ManyToOne(optional = false)
+//    @JoinColumn(name = "id_graphic", referencedColumnName = "id_graphic")
+    @ManyToMany(cascade = CascadeType.REFRESH)
+    @JoinTable(name = "graphic_doctor", joinColumns =
+    @JoinColumn(name = "id_doctor"),
+            inverseJoinColumns = @JoinColumn(name = "id_doctor"))
+    private List<Graphic> graphics;
 
     public Doctor() {
 
@@ -46,11 +49,27 @@ public class Doctor implements Serializable {
         this.iddoctor = iddoctor;
     }
 
-    public Doctor(Long iddoctor, User user, List<SpecialtyCode> specialtyCodes, Graphic graphic) {
+    public Doctor(Long iddoctor, Userdetails userdetails, List<Specialty> specialties, List<Graphic> graphic) {
         this.iddoctor = iddoctor;
-        this.user = user;
-        this.specialtyCodes = specialtyCodes;
-        this.graphic = graphic;
+        this.userdetails = userdetails;
+        this.specialties = specialties;
+        this.graphics = graphic;
+    }
+
+    public Userdetails getUserdetails() {
+        return userdetails;
+    }
+
+    public void setUserdetails(Userdetails userdetails) {
+        this.userdetails = userdetails;
+    }
+
+    public List<Specialty> getSpecialties() {
+        return specialties;
+    }
+
+    public void setSpecialties(List<Specialty> specialties) {
+        this.specialties = specialties;
     }
 
     public Long getIddoctor() {
@@ -61,28 +80,20 @@ public class Doctor implements Serializable {
         this.iddoctor = iddoctor;
     }
 
-    public User getUser() {
-        return user;
+    public List<Specialty> getSpecialtyCode() {
+        return specialties;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setSpecialtyCode(List<Specialty> specialty) {
+        this.specialties = specialty;
     }
 
-    public List<SpecialtyCode> getSpecialtyCode() {
-        return specialtyCodes;
+    public List<Graphic> getGraphic() {
+        return graphics;
     }
 
-    public void setSpecialtyCode(List<SpecialtyCode> specialtyCode) {
-        this.specialtyCodes = specialtyCode;
-    }
-
-    public Graphic getGraphic() {
-        return graphic;
-    }
-
-    public void setGraphic(Graphic graphic) {
-        this.graphic = graphic;
+    public void setGraphic(List<Graphic> graphic) {
+        this.graphics = graphic;
     }
 
     @Override

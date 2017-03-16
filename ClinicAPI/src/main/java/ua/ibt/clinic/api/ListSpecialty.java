@@ -6,12 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Iryna Tkachova
- *
+ * Created by Iryna Tkachova on 12.03.2017.
  */
 @XmlRootElement
-public class ListUsersReceive extends SysMessage {
+public class ListSpecialty extends SysMessage{
 
     @XmlElement(required = true)
-    public List<UserAPI> users = new ArrayList<>();
+    public List<SpecialtyAPI> specialtyes = new ArrayList<>();
 }

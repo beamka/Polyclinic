@@ -15,9 +15,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -37,7 +34,6 @@ public class User implements Serializable {
 
 	@Id
 	@Basic(optional = false)
-	@NotNull
 	@Column(name = "id_user")
 	private Long iduser;
 
@@ -69,15 +65,14 @@ public class User implements Serializable {
 	@Temporal(TemporalType.DATE)
 	private Date lastlogin;
 
-	//@ManyToMany(mappedBy = "id_user")
-	@ManyToMany
-	private List<Ugroup> ugroups;
+	@ManyToMany(cascade = CascadeType.REFRESH)
+	@JoinTable(name = "ugroup_user", joinColumns =
+	@JoinColumn(name = "id_user"),
+			inverseJoinColumns = @JoinColumn(name = "id_group"))
+	private List<Group> groups;
 
-	@OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
-	private Userdetails userdetails;
-
-	@OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
-	private Doctor doctor;
+	@Column(name = "id_details")
+	private Long iddetails;
 
 	public User() {
 
@@ -87,14 +82,15 @@ public class User implements Serializable {
 		this.iduser = iduser;
 	}
 
-	public User(Long iduser, String login, String passwdhash, String email, String createdBy, Userdetails userdetails) {
+	public User(Long iduser, String login, String passwdhash, String email, String createdBy, Long iddetails) {
 		super();
 		this.iduser = iduser;
 		this.login = login;
 		this.passwdhash = passwdhash;
 		this.email = email;
 		this.createdby = createdBy;
-		this.userdetails = userdetails;
+		//this.userdetails = userdetails;
+		this.iddetails = iddetails;
 	}
 
 	public Long getIduser() {
@@ -145,28 +141,20 @@ public class User implements Serializable {
 		this.lastlogin = lastlogin;
 	}
 
-	public List<Ugroup> getUgroups() {
-		return ugroups;
+	public List<Group> getGroups() {
+		return groups;
 	}
 
-	public void setUgroups(List<Ugroup> ugroups) {
-		this.ugroups = ugroups;
+	public void setGroups(List<Group> groups) {
+		this.groups = groups;
 	}
 
-	public Userdetails getUserdetails() {
-		return userdetails;
+	public Long getIddetails() {
+		return iddetails;
 	}
 
-	public void setUserdetails(Userdetails userdetails) {
-		this.userdetails = userdetails;
-	}
-
-	public Doctor getDoctor() {
-		return doctor;
-	}
-
-	public void setDoctor(Doctor doctor) {
-		this.doctor = doctor;
+	public void setIddetails(Long iddetails) {
+		this.iddetails = iddetails;
 	}
 
 	@Override

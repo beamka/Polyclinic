@@ -43,12 +43,12 @@ public class Visit implements Serializable {
 	@Column(name = "info")
 	private String info;
 
-	//@JoinColumn(name = "id_visit", referencedColumnName = "id_details")
 	@ManyToOne(optional = false)
+	@JoinColumn(name = "id_details", referencedColumnName = "id_details")
 	private Userdetails userdetails;
 
-	//@JoinColumn(name = "id_visit", referencedColumnName = "id_doctor")
 	@ManyToOne(optional = false)
+	@JoinColumn(name = "id_doctor", referencedColumnName = "id_doctor")
 	private Doctor doctor;
 
 	public Visit() {

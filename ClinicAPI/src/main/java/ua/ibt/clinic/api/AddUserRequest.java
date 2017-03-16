@@ -8,5 +8,5 @@ import javax.xml.bind.annotation.XmlElement;
  */
 public class AddUserRequest {
 	@XmlElement(required = true)
-	public ClinicUser user;
+	public UserAPI user;
 }

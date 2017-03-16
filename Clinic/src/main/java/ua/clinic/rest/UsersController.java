@@ -29,7 +29,7 @@ public class UsersController {
 	UserMapper userMapper;
 
 	@RequestMapping(path = "/user/new", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ListUsersReceive newUser(@RequestBody ClinicUser inData) {
+	public ListUsersReceive newUser(@RequestBody UserAPI inData) {
 		logger.debug(">>>>>>>>>> UsersController start newUser >>>>>>>>>>");
 		ListUsersReceive outData = new ListUsersReceive();
 		try {
@@ -44,58 +44,36 @@ public class UsersController {
 	}
 
 	@RequestMapping(path = "/user/all", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public UserListReply getAllUsers() {
-		UserListReply reply = new UserListReply();
-		for (User au : userService.getAllUsers()) {
-			reply.users.add(userMapper.toOutside(au));
-			logger.info("EEEEEE");
-		}
+	public ListUsersReceive getAllUsers() {
+		logger.debug(">>>>>>>>>> UsersController start getAllUsers >>>>>>>>>>");
+		ListUsersReceive reply = new ListUsersReceive();
+		userService.getAllUsers().forEach(user -> reply.users.add(userMapper.toOutside(user)));
 		return reply;
 	}
 
 	@RequestMapping(path = "/user/byid/{userid}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public UserListReply getUserById(@PathVariable Long userid) {
-		UserListReply reply = new UserListReply();
+	public ListUsersReceive getUserById(@PathVariable Long userid) {
+		logger.debug(">>>>>>>>>> UsersController start getUserById >>>>>>>>>>");
+		ListUsersReceive reply = new ListUsersReceive();
 		reply.users.add(userMapper.toOutside(userService.getUserById(userid)));
 		return reply;
 	}
 
-	@RequestMapping(path = "/user/add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public UserListReply addUser(@RequestBody AddUserRequest req) {
-		UserListReply rep = new UserListReply();
-		try {
-			User au;
-			au = userService.addUser(userMapper.toInside(req.user));
-			rep.users.add(userMapper.toOutside(au));
-
-			userService.addUser(userMapper.toInside(req.user));
-		} catch (Exception e) {
-			rep.retcode = -1;
-			rep.error_message = e.getMessage();
-			logger.error("Error adding user. Expetion: "+e.getMessage(),e);
-		}
-		return rep;
-	}
-
-	@RequestMapping(path="/user/del/{id_user}",  method=RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public GenericReply delUser(@PathVariable Long id_user ){
-		logger.info("del-1>>>");
-		GenericReply rep = new GenericReply();
+	@RequestMapping(path="/user/del/{id_user}",  method=RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public SysMessage delUser(@PathVariable Long id_user ){
+		logger.debug(">>>>>>>>>> UsersController start delUser >>>>>>>>>>");
+		SysMessage rep = new SysMessage();
 		try{
-			logger.info("del-2>>>");
+			System.out.println("del1>>>>>>>>>>>>>>>>");
 			userService.delUser(id_user);
 		}catch(Exception e){
 			rep.retcode = -1;
-			rep.error_message = e.getMessage();
+			rep.sys_message = e.getMessage();
 			logger.error("Error adding user. Expetion: "+e.getMessage(),e);
 			logger.info("del-3>>> "+e.getMessage(),e);
 		}
 		return rep;
 	}
 
-	@RequestMapping(path = "/user/uu", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public void uuu() {
-		logger.info("UUUUUUU>>>");
-	}
 }
 

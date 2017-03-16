@@ -14,6 +14,10 @@ import ua.clinic.jpa.Userdetails;
  *
  */
 public interface UserdetailsRepository extends CrudRepository<Userdetails, Long> {
+
 	List<Userdetails> findByNameAndSurname(String Name, String Surname);
 
+	List<Userdetails> findByName(String Name);
+
+	List<Userdetails> findBySurname(String Surname);
 }

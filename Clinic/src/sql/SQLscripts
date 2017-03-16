@@ -2,7 +2,7 @@ CREATE DATABASE clinic
     CHARACTER SET utf8
     COLLATE utf8_general_ci;
 
-SELECT * FROM clinic.ugroup;
+SELECT * FROM clinic.group;
 
 SELECT * FROM clinic.user;
 

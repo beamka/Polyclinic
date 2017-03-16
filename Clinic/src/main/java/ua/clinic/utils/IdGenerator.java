@@ -10,6 +10,6 @@ public final class IdGenerator {
     private static SecureRandom random = new SecureRandom();
 
     public static Long newId() {
-        return Math.abs(new BigInteger(100, random).longValue());
+        return Math.abs(new BigInteger(20, random).longValue());
     }
 }

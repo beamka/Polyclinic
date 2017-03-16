@@ -12,15 +12,10 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -35,7 +30,6 @@ public class Userdetails implements Serializable {
 
     @Id
     @Basic(optional = false)
-    @NotNull
     @Column(name = "id_details")
     private Long iddetails;
 
@@ -63,23 +57,25 @@ public class Userdetails implements Serializable {
     @Column(name = "sex")
     private String sex;
 
-    //@Basic(optional = false)
-    @Size(min = 1, max = 200)
+    @Size(max = 1000)
     @Column(name = "notes")
     private String notes;
 
-    @JoinColumn(name = "id_details", referencedColumnName = "id_user", insertable = false, updatable = false)
-    @OneToOne(optional = false)
-    private User user;
+    @Column(name = "id_user")
+    private Long iduser;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userdetails")
-    private List<Address> address;
+    @OneToMany(mappedBy = "userdetails", cascade = CascadeType.ALL)
+    private List<Uaddress> address;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userdetails")
-    private List<Phone> phone;
+    @OneToMany(mappedBy = "userdetails", cascade = CascadeType.ALL)
+    private List<Uphone> uphones;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userdetails")
+    @OneToMany(mappedBy = "userdetails", cascade = CascadeType.ALL)
     private List<Visit> visits;
+
+    @OneToOne(mappedBy = "userdetails", cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_doctor", referencedColumnName = "id_doctor")
+    private Doctor doctor;
 
     public Userdetails() {
 
@@ -90,8 +86,9 @@ public class Userdetails implements Serializable {
         this.iddetails = iddetails;
     }
 
-    public Userdetails(Long iddetails, String numcard, String name, String surname, String middlename, Date birthday,
+    public Userdetails(Long iduser, Long iddetails, String numcard, String name, String surname, String middlename, Date birthday,
                        String sex, String notes) {
+        this.iduser = iduser;
         this.iddetails = iddetails;
         this.numcard = numcard;
         this.name = name;
@@ -100,6 +97,22 @@ public class Userdetails implements Serializable {
         this.birthday = birthday;
         this.sex = sex;
         this.notes = notes;
+    }
+
+    public List<Uphone> getUphones() {
+        return uphones;
+    }
+
+    public void setUphones(List<Uphone> uphones) {
+        this.uphones = uphones;
+    }
+
+    public Doctor getDoctor() {
+        return doctor;
+    }
+
+    public void setDoctor(Doctor doctor) {
+        this.doctor = doctor;
     }
 
     public Long getIddetails() {
@@ -166,28 +179,28 @@ public class Userdetails implements Serializable {
         this.notes = notes;
     }
 
-    public User getUser() {
-        return user;
+    public Long getIduser() {
+        return iduser;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setIduser(Long iduser) {
+        this.iduser = iduser;
     }
 
-    public List<Address> getAddress() {
+    public List<Uaddress> getAddres() {
         return address;
     }
 
-    public void setAddress(List<Address> address) {
-        this.address = address;
+    public void setAddres(List<Uaddress> addres) {
+        this.address = addres;
     }
 
-    public List<Phone> getPhone() {
-        return phone;
+    public List<Uphone> getPhone() {
+        return uphones;
     }
 
-    public void setPhone(List<Phone> phone) {
-        this.phone = phone;
+    public void setPhone(List<Uphone> uphone) {
+        this.uphones = uphone;
     }
 
     public List<Visit> getVisits() {

@@ -5,8 +5,7 @@ package ua.clinic.repository;
 
 import org.springframework.data.repository.CrudRepository;
 
-import ua.clinic.jpa.Ugroup;
-import ua.clinic.jpa.User;
+import ua.clinic.jpa.Group;
 
 import java.util.List;
 
@@ -14,13 +13,12 @@ import java.util.List;
  * @author Iryna Tkachova
  *
  */
-public interface UgroupRepository extends CrudRepository<Ugroup, Long> {
+public interface UgroupRepository extends CrudRepository<Group, Long> {
 
     @Override
-    List<Ugroup> findAll();
+    List<Group> findAll();
 
-    Ugroup findByGroupname(String groupname);
+    Group findByGroupname(String groupname);
 
-    List<User> findUsersByGroupname(String groupname);
 
 }

@@ -4,12 +4,11 @@
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
 		<class>ua.clinic.jpa.User</class>
 		<class>ua.clinic.jpa.Doctor</class>
-		<class>ua.clinic.jpa.Address</class>
+		<class>ua.clinic.jpa.Uaddress</class>
 		<class>ua.clinic.jpa.Graphic</class>
-		<class>ua.clinic.jpa.Phone</class>
-		<class>ua.clinic.jpa.SpecialtyCode</class>
-		<class>ua.clinic.jpa.SpecialtyName</class>
-		<class>ua.clinic.jpa.Ugroup</class>
+		<class>ua.clinic.jpa.Uphone</class>
+		<class>ua.clinic.jpa.Specialty</class>
+		<class>ua.clinic.jpa.Group</class>
 		<class>ua.clinic.jpa.Userdetails</class>
 		<class>ua.clinic.jpa.Visit</class>
 

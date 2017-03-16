@@ -2,9 +2,8 @@ package ua.clinic.tests.integration;
 
 import static org.junit.Assert.*;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import static org.hamcrest.CoreMatchers.containsString;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -23,10 +22,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import ua.ibt.clinic.api.ClinicUser;
+import ua.ibt.clinic.api.UserAPI;
 import ua.ibt.clinic.api.ListUsersReceive;
 
-import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 /**
@@ -44,15 +43,16 @@ public class UserControllerTest {
     @Test
     public void test_newUser() throws Exception{
         logger.debug(">>>>>>>>>> test_newUser >>>>>>>>>>");
-        ClinicUser user = new ClinicUser();
+        UserAPI user = new UserAPI();
         user.login = "test_login";
-        user.name = "test_name";
-        user.surname = "test_surname";
+        //user.name = "test_name";
+        //user.surname = "test_surname";
         user.email = "test_email";
         user.passwdhash = "test_passwdhash";
-        user.numcard = "test_numcard";
+        //user.numcard = "test_numcard";
         user.createdby = "test_MockMvc";
-        user.birthday = new SimpleDateFormat("yyyy-MM-dd").parse("2008-10-10");
+        user.lastlogin = new Date();
+        //user.birthday = new SimpleDateFormat("yyyy-MM-dd").parse("2008-10-10");
 
         ObjectMapper om = new ObjectMapper();
         String content = om.writeValueAsString(user);
@@ -86,7 +86,7 @@ public class UserControllerTest {
 //    @Test
 //    public void addUserTest() throws Exception{
 //        AddUserRequest rq = new AddUserRequest();
-//        rq.user = new ClinicUser();
+//        rq.user = new UserAPI();
 //        //rq.user.firstName = "Test1First";
 //       // rq.user.isLibrarian = true;
 //      //  rq.user.lastName ="Test1Last";

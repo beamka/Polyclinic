@@ -11,13 +11,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import ua.clinic.jpa.Ugroup;
+import ua.clinic.jpa.Group;
 import ua.clinic.jpa.User;
 import ua.clinic.jpa.Userdetails;
 import ua.clinic.repository.UgroupRepository;
 import ua.clinic.repository.UserRepository;
 import ua.clinic.repository.UserdetailsRepository;
-import ua.clinic.utils.EntityIdGenerator;
 import ua.clinic.utils.IdGenerator;
 
 /**
@@ -37,22 +36,24 @@ public class UserService {
     public User newUser(User inData) {
         Long newId;
         do {
-            newId = EntityIdGenerator.random();
+            newId = IdGenerator.newId();
         } while(userRepository.findOne(newId) != null);
         inData.setIduser(newId);
-        Ugroup ugroup = ugroupRepository.findByGroupname("guest");
-        List<Ugroup> ugroups = new ArrayList<>();
-        ugroups.add(ugroup);
-        inData.setUgroups(ugroups);
-        inData.getUserdetails().setIddetails(newId);
+
+        Group group = ugroupRepository.findByGroupname("guest");
+        List<User> users = group.getUsers();
+        users.add(inData);
+
+        List<Group> groups = new ArrayList<>();
+        groups.add(group);
+        inData.setGroups(groups);
+
+        //Userdetails userdetails = new Userdetails(inData.getIduser());
+        //inData.setUserdetails(userdetails);
+
         User outData = userRepository.save(inData);
+
         logger.debug("##### New user's Login: "+outData.getLogin()+"  ID: "+outData.getIduser());
-
-        List<User> users = ugroup.getUsers();
-        users.add(outData);
-        ugroup.setUsers(users);
-        ugroupRepository.save(ugroup);
-
         return outData;
     }
 
@@ -66,28 +67,41 @@ public class UserService {
         return u;
     }
 
-    public List<User> findUserByName(String Name, String Surname) {
-        List<Userdetails> udl = detailsRepository.findByNameAndSurname(Name, Surname);
-        List<User> res = new ArrayList<>();
-        udl.forEach((ud) -> {
-            res.add(userRepository.findOne(ud.getIddetails()));
+    public List<User> getUsersByName(String name) {
+        List<Userdetails> udl = detailsRepository.findByName(name);
+        List<User> result = new ArrayList<>();
+        udl.forEach((userdetails) -> {
+            result.add(userRepository.findOne(userdetails.getIddetails()));
         });
-        return res;
+        return result;
     }
 
-    public User addUser(User au) {
-        logger.debug("Adding users %s with id %s", au.getLogin(), au.getIduser());
-        userRepository.save(au);
-        return au;
+    public List<User> getUsersBySurname(String surname) {
+        List<Userdetails> udl = detailsRepository.findBySurname(surname);
+        List<User> result = new ArrayList<>();
+        udl.forEach((userdetails) -> {
+            result.add(userRepository.findOne(userdetails.getIddetails()));
+        });
+        return result;
+    }
+
+    public List<User> getUsersByNameAndSurname(String name, String surname) {
+        List<Userdetails> udl = detailsRepository.findByNameAndSurname(name, surname);
+        List<User> result = new ArrayList<>();
+        udl.forEach((userdetails) -> {
+            result.add(userRepository.findOne(userdetails.getIddetails()));
+        });
+        return result;
     }
 
     public void delUser(Long id) {
-        logger.info("ID>>> %s", id);
-        User u = userRepository.findOne(id);
-        if(u!=null){
-            logger.debug("Deleting users %s with id %s", u.getLogin(), u.getIduser());
-           // List<Ugroup> gl = u.getUgroups();
-            detailsRepository.delete(id);
+        User user = userRepository.findOne(id);
+        if(user!=null){
+            Userdetails userdetails = detailsRepository.findOne(id);
+            //userdetails.setIddetails(Long.valueOf(1));
+            //detailsRepository.save(userdetails);
+
+            logger.debug("Deleting users "+user.getLogin() + " with id " + user.getIduser());
             userRepository.delete(id);
         }
     }

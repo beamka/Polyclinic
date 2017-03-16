@@ -1,6 +1,7 @@
 package ua.clinic.tests.unit;
 
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import static org.junit.Assert.*;
@@ -12,11 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.junit4.SpringRunner;
-import ua.clinic.jpa.User;
 import ua.clinic.jpa.Userdetails;
+import ua.clinic.jpa.Group;
+import ua.clinic.jpa.User;
+import ua.clinic.repository.UgroupRepository;
+import ua.clinic.repository.UserRepository;
+import ua.clinic.services.UgroupService;
 import ua.clinic.services.UserService;
-import ua.clinic.utils.EntityIdGenerator;
-import ua.ibt.clinic.api.ClinicUser;
+import ua.clinic.services.UserdetailsService;
 
 /**
  * @author Iryna Tkachova
@@ -27,7 +31,89 @@ import ua.ibt.clinic.api.ClinicUser;
 public class UserServiceTest {
     private static final Logger logger = LoggerFactory.getLogger(UserServiceTest.class);
     @Autowired
-    private UserService userServie;
+    private UserService userService;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    UserdetailsService userdetailsService;
+    @Autowired
+    UgroupService ugroupService;
+    @Autowired
+    UgroupRepository ugroupRepository;
+
+
+    @Test
+    public void setDefoultdata(){
+        User user = new User();
+        Userdetails userdetails = new Userdetails();
+        List<Group> groups = new ArrayList<>();
+//        try {
+//            ugroupService.createDefoultGroups();
+//            for (Group ugroup : ugroupService.getAllUgroup()) {
+//                groups.add(ugroup);
+//            }
+//        } catch (Exception e) {
+//            logger.error(">>>>>>> Error createDefoultGroups. Expetion: " + e.getMessage(), e);
+//        }
+
+
+        //-----------
+        user.setLogin("aaaaa");
+        user.setPasswdhash("11111");
+        user.setEmail("test_email");
+        user.setCreatedby("test");
+        user.setLastlogin(new Date());
+        User user1 = userService.newUser(user);
+        assertNotNull("New user not add!", user1);
+
+        userdetails.setIduser(user1.getIduser());
+        userdetails.setNumcard("aa-111");
+        userdetails.setName("Ivan");
+        userdetails.setSurname("Ivanenko");
+        userdetails.setMiddlename("Ivanovich");
+        userdetails.setBirthday(new Date(Long.valueOf("2001-01-01")));
+        userdetails.setNotes("test");
+        Userdetails userdetails1 = userdetailsService.addDetails(userdetails);
+        assertNotNull("New userdetails not add!", userdetails1);
+        //-----------
+        user.setLogin("bbbbb");
+        user.setPasswdhash("22222");
+        user.setEmail("test_email");
+        user.setCreatedby("test");
+        user.setLastlogin(new Date());
+        User user2= userService.newUser(user);
+        assertNotNull("New user not add!", user2);
+
+        userdetails.setIduser(user1.getIduser());
+        userdetails.setNumcard("bb-222");
+        userdetails.setName("Petro");
+        userdetails.setSurname("Petrenko");
+        userdetails.setMiddlename("Petrovich");
+        userdetails.setBirthday(new Date(Long.valueOf("2002-02-02")));
+        userdetails.setNotes("test");
+        Userdetails userdetails2 = userdetailsService.addDetails(userdetails);
+        assertNotNull("New userdetails not add!", userdetails2);
+        //-----------
+        user.setLogin("ccccc");
+        user.setPasswdhash("33333");
+        user.setEmail("test_email");
+        user.setCreatedby("test");
+        user.setLastlogin(new Date());
+        User user3 = userService.newUser(user);
+        assertNotNull("New user not add!", user3);
+
+        userdetails.setIduser(user1.getIduser());
+        userdetails.setNumcard("cc-333");
+        userdetails.setName("Mikolay");
+        userdetails.setSurname("Mikolaenko");
+        userdetails.setMiddlename("Mikolaiovich");
+        userdetails.setBirthday(new Date(Long.valueOf("2003-03-03")));
+        userdetails.setNotes("test");
+        Userdetails userdetails3 = userdetailsService.addDetails(userdetails);
+        assertNotNull("New userdetails not add!", userdetails3);
+
+    }
+
     
 //    @Test
 //    public void findUserTest() throws Exception {
